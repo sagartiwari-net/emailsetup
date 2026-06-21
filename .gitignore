@@ -3,6 +3,8 @@ Thumbs.db
 *.log
 
 # Local secrets — never commit
+SERVER_SETUP.local.md
+SERVER_*.local.md
 mail-panel/.env
 mail-panel/.env.*
 !mail-panel/.env.example

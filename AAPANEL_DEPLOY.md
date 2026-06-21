@@ -47,13 +47,17 @@ git pull origin main
 
 ## Phase C — Laravel setup (server par SSH)
 
+> **Important:** Laravel 13 needs **PHP 8.3+**. SSH default PHP 7.4 hai — hamesha `/www/server/php/83/bin/php` use karo.  
+> aaPanel → Website → `email.sagartiwari.net` → PHP version → **8.3**.
+
 ```bash
 cd /www/wwwroot/sagartiwari.net/email/mail-panel
 
-composer install --no-dev --optimize-autoloader
+# PHP 8.3 se composer (root user avoid karo agar possible ho — warna yes)
+/www/server/php/83/bin/php /usr/bin/composer install --no-dev --optimize-autoloader
 
 cp .env.example .env
-php artisan key:generate
+/www/server/php/83/bin/php artisan key:generate
 ```
 
 ### `.env` production values
@@ -86,10 +90,10 @@ MAIL_SYSTEM_DAILY_CAP=15
 ```
 
 ```bash
-php artisan migrate --seed
-php artisan config:cache
-php artisan route:cache
-php artisan view:cache
+/www/server/php/83/bin/php artisan migrate --seed
+/www/server/php/83/bin/php artisan config:cache
+/www/server/php/83/bin/php artisan route:cache
+/www/server/php/83/bin/php artisan view:cache
 
 chown -R www:www storage bootstrap/cache
 chmod -R 775 storage bootstrap/cache
@@ -119,14 +123,14 @@ location / {
 
 ### aaPanel → Cron (every minute)
 ```bash
-* * * * * cd /www/wwwroot/sagartiwari.net/email/mail-panel && php artisan schedule:run >> /dev/null 2>&1
+* * * * * cd /www/wwwroot/sagartiwari.net/email/mail-panel && /www/server/php/83/bin/php artisan schedule:run >> /dev/null 2>&1
 ```
 
 ### Supervisor queue worker
 ```ini
 [program:mail-panel-worker]
 process_name=%(program_name)s_%(process_num)02d
-command=php /www/wwwroot/sagartiwari.net/email/mail-panel/artisan queue:work database --sleep=3 --tries=3 --max-time=3600
+command=/www/server/php/83/bin/php /www/wwwroot/sagartiwari.net/email/mail-panel/artisan queue:work database --sleep=3 --tries=3 --max-time=3600
 autostart=true
 autorestart=true
 user=www
