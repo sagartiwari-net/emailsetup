@@ -1,0 +1,20 @@
+.DS_Store
+Thumbs.db
+*.log
+
+# Local secrets — never commit
+mail-panel/.env
+mail-panel/.env.*
+!mail-panel/.env.example
+demo-website/config.php
+
+# Laravel (also in mail-panel/.gitignore)
+mail-panel/vendor/
+mail-panel/node_modules/
+mail-panel/public/hot
+mail-panel/public/storage
+mail-panel/storage/*.key
+mail-panel/database/*.sqlite*
+
+composer.phar
+composer

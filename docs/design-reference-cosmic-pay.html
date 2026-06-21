@@ -1,0 +1,2280 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cosmic Pay - Payment Gateway Dashboard</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-dark: #1a1a2e;
+            --primary-purple: #6c63ff;
+            --accent-green: #4ade80;
+            --accent-pink: #fca5a5;
+            --accent-blue: #93c5fd;
+            --bg-light: #f8f9fa;
+            --bg-white: #ffffff;
+            --text-primary: #1a1a2e;
+            --text-secondary: #6b7280;
+            --border-color: #e5e7eb;
+            --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+            --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            --radius-sm: 8px;
+            --radius-md: 12px;
+            --radius-lg: 16px;
+            --radius-xl: 20px;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background-color: var(--bg-light);
+            color: var(--text-primary);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        .app-container {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 260px;
+            background: var(--bg-white);
+            border-right: 1px solid var(--border-color);
+            padding: 24px 20px;
+            position: fixed;
+            height: 100vh;
+            overflow-y: auto;
+            z-index: 100;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 40px;
+            padding: 0 4px;
+        }
+
+        .logo-icon {
+            width: 36px;
+            height: 36px;
+            background: linear-gradient(135deg, var(--primary-purple), #9333ea);
+            border-radius: var(--radius-sm);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 18px;
+        }
+
+        .logo-text {
+            font-size: 22px;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        .user-profile {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 32px;
+            padding: 12px;
+            background: var(--bg-light);
+            border-radius: var(--radius-md);
+        }
+
+        .user-avatar {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid white;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .user-info h3 {
+            font-size: 15px;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 2px;
+        }
+
+        .user-info p {
+            font-size: 13px;
+            color: var(--text-secondary);
+        }
+
+        .nav-menu {
+            list-style: none;
+        }
+
+        .nav-item {
+            margin-bottom: 4px;
+        }
+
+        .nav-link {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 16px;
+            text-decoration: none;
+            color: var(--text-secondary);
+            border-radius: var(--radius-md);
+            transition: all 0.2s ease;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .nav-link:hover {
+            background: var(--bg-light);
+            color: var(--text-primary);
+        }
+
+        .nav-link.active {
+            background: linear-gradient(135deg, rgba(108, 99, 255, 0.1), rgba(147, 51, 234, 0.1));
+            color: var(--primary-purple);
+            font-weight: 600;
+        }
+
+        .nav-link i {
+            width: 20px;
+            font-size: 16px;
+        }
+
+        .nav-divider {
+            height: 1px;
+            background: var(--border-color);
+            margin: 20px 0;
+        }
+
+        .sidebar-footer {
+            margin-top: auto;
+            padding-top: 20px;
+        }
+
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            margin-left: 260px;
+            padding: 32px 40px;
+            min-height: 100vh;
+        }
+
+        /* Header */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 32px;
+            position: relative;
+        }
+
+        .header-left h1 {
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 4px;
+        }
+
+        .header-left p {
+            color: var(--text-secondary);
+            font-size: 14px;
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        /* Global Search Bar */
+        .global-search-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .global-search-bar {
+            width: 0;
+            overflow: hidden;
+            opacity: 0;
+            transition: width 0.35s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.25s ease;
+        }
+
+        .global-search-bar.open {
+            width: 280px;
+            opacity: 1;
+        }
+
+        .global-search-bar input {
+            width: 100%;
+            padding: 9px 16px 9px 38px;
+            border: 1.5px solid var(--primary-purple);
+            border-radius: var(--radius-md);
+            background: var(--bg-white);
+            color: var(--text-primary);
+            font-size: 14px;
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(108, 99, 255, 0.12);
+        }
+
+        .global-search-bar input::placeholder {
+            color: var(--text-secondary);
+        }
+
+        .global-search-bar .search-icon-inside {
+            position: absolute;
+            left: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--primary-purple);
+            font-size: 13px;
+            pointer-events: none;
+        }
+
+        .global-search-container {
+            position: relative;
+        }
+
+        .search-results-dropdown {
+            display: none;
+            position: absolute;
+            top: calc(100% + 8px);
+            right: 0;
+            width: 360px;
+            background: white;
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-lg);
+            z-index: 200;
+            overflow: hidden;
+        }
+
+        .search-results-dropdown.show {
+            display: block;
+            animation: fadeIn 0.15s ease;
+        }
+
+        .search-results-header {
+            padding: 12px 16px;
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            border-bottom: 1px solid var(--border-color);
+            background: var(--bg-light);
+        }
+
+        .search-result-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 16px;
+            cursor: pointer;
+            transition: background 0.15s ease;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .search-result-item:last-child {
+            border-bottom: none;
+        }
+
+        .search-result-item:hover {
+            background: var(--bg-light);
+        }
+
+        .search-result-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: var(--radius-sm);
+            background: rgba(108, 99, 255, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--primary-purple);
+            font-size: 14px;
+            flex-shrink: 0;
+        }
+
+        .search-result-info h5 {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 2px;
+        }
+
+        .search-result-info p {
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+
+        .search-result-amount {
+            margin-left: auto;
+            font-size: 14px;
+            font-weight: 700;
+            color: #059669;
+        }
+
+        .search-empty {
+            padding: 24px;
+            text-align: center;
+            color: var(--text-secondary);
+            font-size: 14px;
+        }
+
+        .header-btn {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            border: none;
+            background: var(--bg-white);
+            color: var(--text-secondary);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: var(--shadow-sm);
+            transition: all 0.2s ease;
+            position: relative;
+        }
+
+        .header-btn:hover {
+            background: var(--bg-light);
+            color: var(--text-primary);
+            transform: translateY(-2px);
+        }
+
+        .header-btn.active-search {
+            background: var(--primary-purple);
+            color: white;
+        }
+
+        .header-btn .badge {
+            position: absolute;
+            top: 6px;
+            right: 6px;
+            width: 8px;
+            height: 8px;
+            background: #ef4444;
+            border-radius: 50%;
+            border: 2px solid white;
+        }
+
+        /* Notification Panel */
+        .notification-panel {
+            position: absolute;
+            top: calc(100% + 12px);
+            right: 0;
+            width: 360px;
+            background: white;
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-lg);
+            z-index: 300;
+            overflow: hidden;
+            display: none;
+            animation: slideDown 0.2s ease;
+        }
+
+        .notification-panel.show {
+            display: block;
+        }
+
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-8px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .notification-panel-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px 20px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .notification-panel-header h4 {
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        .notif-mark-read {
+            font-size: 12px;
+            color: var(--primary-purple);
+            cursor: pointer;
+            font-weight: 500;
+        }
+
+        .notif-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            padding: 14px 20px;
+            border-bottom: 1px solid var(--border-color);
+            transition: background 0.15s ease;
+            position: relative;
+        }
+
+        .notif-item:last-child {
+            border-bottom: none;
+        }
+
+        .notif-item:hover {
+            background: var(--bg-light);
+        }
+
+        .notif-item.unread::before {
+            content: '';
+            position: absolute;
+            left: 8px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: var(--primary-purple);
+        }
+
+        .notif-icon {
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            background: rgba(74, 222, 128, 0.15);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #059669;
+            font-size: 15px;
+            flex-shrink: 0;
+        }
+
+        .notif-content h5 {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 3px;
+        }
+
+        .notif-content p {
+            font-size: 12px;
+            color: var(--text-secondary);
+            margin-bottom: 4px;
+        }
+
+        .notif-time {
+            font-size: 11px;
+            color: var(--text-secondary);
+            font-weight: 500;
+        }
+
+        .notif-amount {
+            margin-left: auto;
+            font-size: 14px;
+            font-weight: 700;
+            color: #059669;
+            white-space: nowrap;
+        }
+
+        /* Page transitions */
+        .page {
+            display: none;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .page.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Dashboard Grid — smaller revenue card */
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: 1fr 1.5fr;
+            gap: 24px;
+            margin-bottom: 24px;
+            align-items: start;
+        }
+
+        /* Card Styles */
+        .card {
+            background: var(--bg-white);
+            border-radius: var(--radius-xl);
+            padding: 24px;
+            box-shadow: var(--shadow-sm);
+            border: 1px solid var(--border-color);
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .card-title {
+            font-size: 17px;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        /* Revenue Card — compact */
+        .revenue-card {
+            background: linear-gradient(135deg, var(--primary-dark) 0%, #16213e 100%);
+            color: white;
+            position: relative;
+            overflow: hidden;
+            padding: 22px;
+        }
+
+        .revenue-card::before {
+            content: '';
+            position: absolute;
+            top: -40%;
+            right: -15%;
+            width: 220px;
+            height: 220px;
+            background: radial-gradient(circle, rgba(108, 99, 255, 0.2) 0%, transparent 70%);
+            border-radius: 50%;
+        }
+
+        .revenue-card .card-title {
+            color: rgba(255, 255, 255, 0.75);
+            font-size: 13px;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.6px;
+        }
+
+        .revenue-amount {
+            font-size: 30px;
+            font-weight: 700;
+            margin: 10px 0;
+            letter-spacing: -0.5px;
+        }
+
+        .revenue-trend {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 13px;
+            color: var(--accent-green);
+            margin-bottom: 18px;
+        }
+
+        .revenue-actions {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 8px 16px;
+            border-radius: var(--radius-md);
+            border: none;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background: white;
+            color: var(--primary-dark);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .btn-outline {
+            background: transparent;
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .btn-outline:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        /* Stats Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            margin-bottom: 24px;
+        }
+
+        .stat-card {
+            background: var(--bg-white);
+            border-radius: var(--radius-xl);
+            padding: 24px;
+            box-shadow: var(--shadow-sm);
+            border: 1px solid var(--border-color);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-card.green { background: linear-gradient(135deg, rgba(74, 222, 128, 0.08) 0%, rgba(74, 222, 128, 0.02) 100%); }
+        .stat-card.pink { background: linear-gradient(135deg, rgba(252, 165, 165, 0.08) 0%, rgba(252, 165, 165, 0.02) 100%); }
+        .stat-card.blue { background: linear-gradient(135deg, rgba(147, 197, 253, 0.08) 0%, rgba(147, 197, 253, 0.02) 100%); }
+
+        .stat-label {
+            font-size: 13px;
+            color: var(--text-secondary);
+            margin-bottom: 12px;
+            font-weight: 500;
+        }
+
+        .stat-value {
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 8px;
+        }
+
+        .stat-change {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            font-size: 13px;
+            font-weight: 600;
+            padding: 4px 10px;
+            border-radius: 20px;
+        }
+
+        .stat-change.positive { color: #059669; background: rgba(5, 150, 105, 0.1); }
+        .stat-change.negative { color: #dc2626; background: rgba(220, 38, 38, 0.1); }
+
+        .stat-icon {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            width: 40px;
+            height: 40px;
+            border-radius: var(--radius-md);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+        }
+
+        .stat-card.green .stat-icon { background: rgba(74, 222, 128, 0.2); color: #059669; }
+        .stat-card.pink .stat-icon { background: rgba(252, 165, 165, 0.2); color: #dc2626; }
+        .stat-card.blue .stat-icon { background: rgba(147, 197, 253, 0.2); color: #2563eb; }
+
+        /* Transactions List */
+        .transactions-list {
+            max-height: 340px;
+            overflow-y: auto;
+        }
+
+        .transaction-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 14px 0;
+            border-bottom: 1px solid var(--border-color);
+            transition: all 0.2s ease;
+        }
+
+        .transaction-item:last-child { border-bottom: none; }
+
+        .transaction-item:hover { padding-left: 8px; }
+
+        .transaction-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .transaction-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: var(--radius-md);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+        }
+
+        .transaction-icon.credit { background: rgba(74, 222, 128, 0.15); color: #059669; }
+        .transaction-icon.debit { background: rgba(252, 165, 165, 0.15); color: #dc2626; }
+
+        .transaction-info h4 {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 2px;
+        }
+
+        .transaction-info p {
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+
+        .transaction-amount {
+            font-size: 15px;
+            font-weight: 700;
+        }
+
+        .transaction-amount.credit { color: #059669; }
+        .transaction-amount.debit { color: var(--text-primary); }
+
+        /* Filter Section */
+        .filter-section {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 24px;
+            flex-wrap: wrap;
+        }
+
+        .filter-select {
+            padding: 10px 16px;
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            background: var(--bg-white);
+            color: var(--text-primary);
+            font-size: 14px;
+            cursor: pointer;
+            outline: none;
+            transition: all 0.2s ease;
+        }
+
+        .filter-select:focus {
+            border-color: var(--primary-purple);
+            box-shadow: 0 0 0 3px rgba(108, 99, 255, 0.1);
+        }
+
+        .search-box {
+            flex: 1;
+            min-width: 250px;
+            position: relative;
+        }
+
+        .search-box input {
+            width: 100%;
+            padding: 10px 16px 10px 40px;
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            background: var(--bg-white);
+            color: var(--text-primary);
+            font-size: 14px;
+            outline: none;
+            transition: all 0.2s ease;
+        }
+
+        .search-box input:focus {
+            border-color: var(--primary-purple);
+            box-shadow: 0 0 0 3px rgba(108, 99, 255, 0.1);
+        }
+
+        .search-box i {
+            position: absolute;
+            left: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-secondary);
+        }
+
+        /* Table */
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .data-table th {
+            text-align: left;
+            padding: 14px 16px;
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text-secondary);
+            border-bottom: 2px solid var(--border-color);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .data-table td {
+            padding: 16px;
+            font-size: 14px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .data-table tr:hover td {
+            background: var(--bg-light);
+        }
+
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .status-badge.success { background: rgba(74, 222, 128, 0.15); color: #059669; }
+        .status-badge.pending { background: rgba(251, 191, 36, 0.15); color: #d97706; }
+        .status-badge.failed { background: rgba(239, 68, 68, 0.15); color: #dc2626; }
+
+        /* Form */
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 8px;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 12px 16px;
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            background: var(--bg-white);
+            color: var(--text-primary);
+            font-size: 14px;
+            outline: none;
+            transition: all 0.2s ease;
+        }
+
+        .form-input:focus {
+            border-color: var(--primary-purple);
+            box-shadow: 0 0 0 3px rgba(108, 99, 255, 0.1);
+        }
+
+        .form-input::placeholder { color: var(--text-secondary); }
+
+        textarea.form-input {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        /* Key Card */
+        .key-display {
+            background: var(--bg-light);
+            border: 2px dashed var(--border-color);
+            border-radius: var(--radius-lg);
+            padding: 24px;
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .key-value {
+            font-family: 'Courier New', monospace;
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--primary-purple);
+            word-break: break-all;
+            margin: 16px 0;
+            padding: 16px;
+            background: white;
+            border-radius: var(--radius-md);
+        }
+
+        .key-meta {
+            display: flex;
+            justify-content: center;
+            gap: 24px;
+            margin-top: 16px;
+            font-size: 13px;
+            color: var(--text-secondary);
+        }
+
+        .key-meta span {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        /* Profile List */
+        .profile-list {
+            display: grid;
+            gap: 16px;
+            margin-top: 24px;
+        }
+
+        .profile-card {
+            background: var(--bg-white);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-lg);
+            padding: 16px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.2s ease;
+        }
+
+        .profile-card:hover {
+            box-shadow: var(--shadow-md);
+            transform: translateY(-2px);
+        }
+
+        .profile-card.on-hold {
+            border-color: #f59e0b;
+            background: rgba(245, 158, 11, 0.04);
+            opacity: 0.85;
+        }
+
+        .profile-info {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .profile-avatar {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary-purple), #9333ea);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 16px;
+            font-weight: 700;
+        }
+
+        .profile-details h4 {
+            font-size: 15px;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 4px;
+        }
+
+        .profile-details p {
+            font-size: 13px;
+            color: var(--text-secondary);
+        }
+
+        .hold-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 2px 8px;
+            background: rgba(245, 158, 11, 0.15);
+            color: #d97706;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 600;
+            margin-top: 4px;
+        }
+
+        .profile-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .action-btn {
+            width: 34px;
+            height: 34px;
+            border-radius: var(--radius-sm);
+            border: 1px solid var(--border-color);
+            background: var(--bg-white);
+            color: var(--text-secondary);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease;
+            font-size: 13px;
+        }
+
+        .action-btn:hover {
+            background: var(--primary-purple);
+            color: white;
+            border-color: var(--primary-purple);
+        }
+
+        .action-btn.hold-active {
+            background: rgba(245, 158, 11, 0.1);
+            color: #d97706;
+            border-color: #f59e0b;
+        }
+
+        /* Settings Modal */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            animation: fadeIn 0.2s ease;
+        }
+
+        .modal-overlay.show {
+            display: flex;
+        }
+
+        .modal {
+            background: white;
+            border-radius: var(--radius-xl);
+            padding: 32px;
+            max-width: 520px;
+            width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
+            animation: slideUp 0.3s ease;
+        }
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+        }
+
+        .modal-title {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        .modal-close {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            border: none;
+            background: var(--bg-light);
+            color: var(--text-secondary);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease;
+            font-size: 16px;
+        }
+
+        .modal-close:hover {
+            background: var(--border-color);
+            color: var(--text-primary);
+        }
+
+        /* Settings Sections */
+        .settings-section {
+            margin-bottom: 28px;
+            padding-bottom: 28px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .settings-section:last-of-type {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+
+        .settings-section-title {
+            font-size: 13px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.6px;
+            color: var(--text-secondary);
+            margin-bottom: 16px;
+        }
+
+        .toggle-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0;
+        }
+
+        .toggle-row-info h5 {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 2px;
+        }
+
+        .toggle-row-info p {
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+
+        .toggle {
+            position: relative;
+            width: 44px;
+            height: 24px;
+            flex-shrink: 0;
+        }
+
+        .toggle input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .toggle-slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: var(--border-color);
+            transition: 0.3s;
+            border-radius: 24px;
+        }
+
+        .toggle-slider:before {
+            position: absolute;
+            content: "";
+            height: 18px;
+            width: 18px;
+            left: 3px;
+            bottom: 3px;
+            background: white;
+            transition: 0.3s;
+            border-radius: 50%;
+        }
+
+        .toggle input:checked + .toggle-slider {
+            background: var(--primary-purple);
+        }
+
+        .toggle input:checked + .toggle-slider:before {
+            transform: translateX(20px);
+        }
+
+        /* Buttons */
+        .btn-success {
+            background: linear-gradient(135deg, #059669, #047857);
+            color: white;
+        }
+
+        .btn-success:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(5, 150, 105, 0.3);
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, #ef4444, #dc2626);
+            color: white;
+        }
+
+        .btn-danger:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
+        }
+
+        .btn-warning {
+            background: linear-gradient(135deg, #f59e0b, #d97706);
+            color: white;
+        }
+
+        .btn-warning:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(245, 158, 11, 0.3);
+        }
+
+        .btn-full {
+            width: 100%;
+            justify-content: center;
+            padding: 14px;
+        }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: var(--bg-light); }
+        ::-webkit-scrollbar-thumb { background: var(--border-color); border-radius: 3px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--text-secondary); }
+
+        /* Responsive */
+        @media (max-width: 1200px) {
+            .dashboard-grid { grid-template-columns: 1fr; }
+            .stats-grid { grid-template-columns: repeat(2, 1fr); }
+        }
+
+        @media (max-width: 768px) {
+            .main-content { margin-left: 0; padding: 20px; }
+            .sidebar { transform: translateX(-100%); transition: transform 0.3s ease; }
+            .sidebar.open { transform: translateX(0); }
+            .stats-grid { grid-template-columns: 1fr; }
+            .filter-section { flex-direction: column; }
+            .global-search-bar.open { width: 180px; }
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+    </style>
+</head>
+<body>
+<div class="app-container">
+
+    <!-- Sidebar -->
+    <aside class="sidebar">
+        <div class="logo">
+            <div class="logo-icon"><i class="fas fa-rocket"></i></div>
+            <span class="logo-text">Cosmic Pay</span>
+        </div>
+
+        <div class="user-profile">
+            <img src="https://i.pravatar.cc/150?img=12" alt="User" class="user-avatar">
+            <div class="user-info">
+                <h3>Admin User</h3>
+                <p>Payment Gateway</p>
+            </div>
+        </div>
+
+        <ul class="nav-menu">
+            <li class="nav-item">
+                <a class="nav-link active" onclick="showPage('dashboard', this)">
+                    <i class="fas fa-chart-line"></i><span>Dashboard</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" onclick="showPage('transactions', this)">
+                    <i class="fas fa-exchange-alt"></i><span>Transactions</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" onclick="showPage('keys', this)">
+                    <i class="fas fa-key"></i><span>Manage Keys</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" onclick="showPage('upi', this)">
+                    <i class="fas fa-wallet"></i><span>UPI Profiles</span>
+                </a>
+            </li>
+
+            <li class="nav-divider"></li>
+
+            <li class="nav-item">
+                <a class="nav-link">
+                    <i class="fas fa-cog"></i><span>Settings</span>
+                </a>
+            </li>
+        </ul>
+
+        <div class="sidebar-footer">
+            <a class="nav-link" style="color: #ef4444;">
+                <i class="fas fa-sign-out-alt"></i><span>Sign out</span>
+            </a>
+        </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Header -->
+        <header class="header">
+            <div class="header-left">
+                <h1 id="page-title">Dashboard</h1>
+                <p id="page-subtitle">Welcome back! Here's your payment overview</p>
+            </div>
+            <div class="header-right">
+                <!-- Search -->
+                <div class="global-search-wrapper">
+                    <div class="global-search-container" id="globalSearchContainer">
+                        <div class="global-search-bar" id="globalSearchBar">
+                            <i class="fas fa-search search-icon-inside"></i>
+                            <input type="text" id="globalSearchInput" placeholder="Search customer or UTR ID…" oninput="handleGlobalSearch(this.value)" autocomplete="off">
+                        </div>
+                        <div class="search-results-dropdown" id="searchResultsDropdown"></div>
+                    </div>
+                    <button class="header-btn" id="searchToggleBtn" onclick="toggleSearch()">
+                        <i class="fas fa-search"></i>
+                    </button>
+                </div>
+
+                <!-- Notifications -->
+                <div style="position: relative;">
+                    <button class="header-btn" id="notifBtn" onclick="toggleNotifications()">
+                        <i class="fas fa-bell"></i>
+                        <span class="badge" id="notifBadge"></span>
+                    </button>
+                    <div class="notification-panel" id="notificationPanel">
+                        <div class="notification-panel-header">
+                            <h4>Recent Payments</h4>
+                            <span class="notif-mark-read" onclick="markAllRead()">Mark all read</span>
+                        </div>
+                        <div id="notifList"></div>
+                    </div>
+                </div>
+
+                <button class="header-btn">
+                    <i class="fas fa-user-circle"></i>
+                </button>
+            </div>
+        </header>
+
+        <!-- ==================== DASHBOARD PAGE ==================== -->
+        <div id="dashboard" class="page active">
+            <div class="dashboard-grid">
+                <!-- Total Revenue Card — compact -->
+                <div class="card revenue-card">
+                    <h3 class="card-title">Total Revenue</h3>
+                    <div class="revenue-amount">₹24,56,789</div>
+                    <div class="revenue-trend">
+                        <i class="fas fa-arrow-up"></i>
+                        <span>+12.5% from last month</span>
+                    </div>
+                    <div class="revenue-actions">
+                        <button class="btn btn-primary">
+                            <i class="fas fa-download"></i>Export Report
+                        </button>
+                        <button class="btn btn-outline">
+                            <i class="fas fa-calendar"></i>Details
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Recent Transactions Preview -->
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">Recent Transactions</h3>
+                        <select class="filter-select" style="padding: 6px 12px; font-size: 12px;">
+                            <option>This Week</option>
+                            <option>This Month</option>
+                            <option>This Year</option>
+                        </select>
+                    </div>
+                    <div class="transactions-list">
+                        <div class="transaction-item">
+                            <div class="transaction-left">
+                                <div class="transaction-icon credit"><i class="fas fa-arrow-down"></i></div>
+                                <div class="transaction-info">
+                                    <h4>Payment Received</h4>
+                                    <p>Order #12345 · <i class="fas fa-mobile-alt" style="font-size:11px;"></i> UPI</p>
+                                </div>
+                            </div>
+                            <div class="transaction-amount credit">+₹5,000</div>
+                        </div>
+                        <div class="transaction-item">
+                            <div class="transaction-left">
+                                <div class="transaction-icon credit"><i class="fas fa-arrow-down"></i></div>
+                                <div class="transaction-info">
+                                    <h4>Subscription</h4>
+                                    <p>Monthly Plan · <i class="fas fa-mobile-alt" style="font-size:11px;"></i> UPI</p>
+                                </div>
+                            </div>
+                            <div class="transaction-amount credit">+₹999</div>
+                        </div>
+                        <div class="transaction-item">
+                            <div class="transaction-left">
+                                <div class="transaction-icon debit"><i class="fas fa-arrow-up"></i></div>
+                                <div class="transaction-info">
+                                    <h4>Refund Processed</h4>
+                                    <p>Order #12340 · <i class="fas fa-mobile-alt" style="font-size:11px;"></i> UPI</p>
+                                </div>
+                            </div>
+                            <div class="transaction-amount debit">-₹2,500</div>
+                        </div>
+                        <div class="transaction-item">
+                            <div class="transaction-left">
+                                <div class="transaction-icon credit"><i class="fas fa-arrow-down"></i></div>
+                                <div class="transaction-info">
+                                    <h4>Bulk Payment</h4>
+                                    <p>Enterprise Client · <i class="fas fa-mobile-alt" style="font-size:11px;"></i> UPI</p>
+                                </div>
+                            </div>
+                            <div class="transaction-amount credit">+₹45,000</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Stats Grid -->
+            <div class="stats-grid">
+                <div class="stat-card green">
+                    <div class="stat-label">Today's Revenue</div>
+                    <div class="stat-value">₹1,23,456</div>
+                    <span class="stat-change positive"><i class="fas fa-arrow-up"></i> +18.2%</span>
+                    <div class="stat-icon"><i class="fas fa-rupee-sign"></i></div>
+                </div>
+                <div class="stat-card pink">
+                    <div class="stat-label">Total Transactions</div>
+                    <div class="stat-value">2,847</div>
+                    <span class="stat-change positive"><i class="fas fa-arrow-up"></i> +24.5%</span>
+                    <div class="stat-icon"><i class="fas fa-receipt"></i></div>
+                </div>
+                <div class="stat-card blue">
+                    <div class="stat-label">Success Rate</div>
+                    <div class="stat-value">98.7%</div>
+                    <span class="stat-change positive"><i class="fas fa-arrow-up"></i> +2.3%</span>
+                    <div class="stat-icon"><i class="fas fa-check-circle"></i></div>
+                </div>
+            </div>
+
+            <!-- Bottom cards -->
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px;">
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">Revenue by Method</h3>
+                    </div>
+                    <div style="margin-top: 12px;">
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 12px;">
+                            <span style="font-size: 14px; color: var(--text-secondary);"><i class="fas fa-mobile-alt" style="margin-right:6px; color: var(--primary-purple);"></i>UPI Payments</span>
+                            <span style="font-size: 14px; font-weight: 600;">100%</span>
+                        </div>
+                        <div style="height: 10px; background: var(--bg-light); border-radius: 5px; overflow: hidden;">
+                            <div style="width: 100%; height: 100%; background: linear-gradient(90deg, var(--primary-purple), #9333ea); border-radius: 5px;"></div>
+                        </div>
+                        <p style="font-size: 12px; color: var(--text-secondary); margin-top: 12px; display: flex; align-items: center; gap: 6px;">
+                            <i class="fas fa-info-circle" style="color: var(--primary-purple);"></i>
+                            All payments processed exclusively via UPI
+                        </p>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">Quick Actions</h3>
+                    </div>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 8px;">
+                        <button class="btn btn-primary" style="justify-content: center; padding: 16px;" onclick="showPage('transactions', null)">
+                            <i class="fas fa-history"></i>View All Txns
+                        </button>
+                        <button class="btn btn-success" style="justify-content: center; padding: 16px;" onclick="showPage('keys', null)">
+                            <i class="fas fa-plus"></i>New API Key
+                        </button>
+                        <button class="btn btn-outline" style="justify-content: center; padding: 16px; background: var(--bg-light); color: var(--text-primary); border: 1px solid var(--border-color);" onclick="showPage('upi', null)">
+                            <i class="fas fa-wallet"></i>Add UPI
+                        </button>
+                        <button class="btn btn-outline" style="justify-content: center; padding: 16px; background: var(--bg-light); color: var(--text-primary); border: 1px solid var(--border-color);">
+                            <i class="fas fa-file-export"></i>Export Data
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ==================== TRANSACTIONS PAGE ==================== -->
+        <div id="transactions" class="page">
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">All Transactions</h3>
+                    <button class="btn btn-primary" style="padding: 8px 16px; font-size: 13px;">
+                        <i class="fas fa-download"></i>Export
+                    </button>
+                </div>
+
+                <div class="filter-section">
+                    <div class="search-box">
+                        <i class="fas fa-search"></i>
+                        <input type="text" placeholder="Search by customer name or UTR ID…">
+                    </div>
+                    <select class="filter-select">
+                        <option>All Status</option>
+                        <option>Success</option>
+                        <option>Pending</option>
+                        <option>Failed</option>
+                    </select>
+                    <select class="filter-select">
+                        <option>Last 7 Days</option>
+                        <option>Last 30 Days</option>
+                        <option>Last 90 Days</option>
+                        <option>This Year</option>
+                    </select>
+                    <select class="filter-select">
+                        <option>All Amounts</option>
+                        <option>₹0 – ₹1,000</option>
+                        <option>₹1,000 – ₹10,000</option>
+                        <option>₹10,000+</option>
+                    </select>
+                </div>
+
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Transaction ID</th>
+                            <th>Date & Time</th>
+                            <th>Customer</th>
+                            <th>Method</th>
+                            <th>Amount</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>#TXN001245</strong></td>
+                            <td>2024-01-15 14:32</td>
+                            <td>Rahul Sharma</td>
+                            <td><i class="fas fa-mobile-alt"></i> UPI</td>
+                            <td><strong>₹5,499.00</strong></td>
+                            <td><span class="status-badge success"><i class="fas fa-check-circle"></i> Success</span></td>
+                            <td><button class="action-btn"><i class="fas fa-eye"></i></button></td>
+                        </tr>
+                        <tr>
+                            <td><strong>#TXN001244</strong></td>
+                            <td>2024-01-15 13:21</td>
+                            <td>Priya Patel</td>
+                            <td><i class="fas fa-mobile-alt"></i> UPI</td>
+                            <td><strong>₹12,999.00</strong></td>
+                            <td><span class="status-badge success"><i class="fas fa-check-circle"></i> Success</span></td>
+                            <td><button class="action-btn"><i class="fas fa-eye"></i></button></td>
+                        </tr>
+                        <tr>
+                            <td><strong>#TXN001243</strong></td>
+                            <td>2024-01-15 12:45</td>
+                            <td>Amit Kumar</td>
+                            <td><i class="fas fa-mobile-alt"></i> UPI</td>
+                            <td><strong>₹2,199.00</strong></td>
+                            <td><span class="status-badge pending"><i class="fas fa-clock"></i> Pending</span></td>
+                            <td><button class="action-btn"><i class="fas fa-eye"></i></button></td>
+                        </tr>
+                        <tr>
+                            <td><strong>#TXN001242</strong></td>
+                            <td>2024-01-15 11:08</td>
+                            <td>Sneha Reddy</td>
+                            <td><i class="fas fa-mobile-alt"></i> UPI</td>
+                            <td><strong>₹8,750.00</strong></td>
+                            <td><span class="status-badge success"><i class="fas fa-check-circle"></i> Success</span></td>
+                            <td><button class="action-btn"><i class="fas fa-eye"></i></button></td>
+                        </tr>
+                        <tr>
+                            <td><strong>#TXN001241</strong></td>
+                            <td>2024-01-15 10:33</td>
+                            <td>Vikram Singh</td>
+                            <td><i class="fas fa-mobile-alt"></i> UPI</td>
+                            <td><strong>₹3,499.00</strong></td>
+                            <td><span class="status-badge failed"><i class="fas fa-times-circle"></i> Failed</span></td>
+                            <td><button class="action-btn"><i class="fas fa-eye"></i></button></td>
+                        </tr>
+                        <tr>
+                            <td><strong>#TXN001240</strong></td>
+                            <td>2024-01-14 18:22</td>
+                            <td>Neha Gupta</td>
+                            <td><i class="fas fa-mobile-alt"></i> UPI</td>
+                            <td><strong>₹15,999.00</strong></td>
+                            <td><span class="status-badge success"><i class="fas fa-check-circle"></i> Success</span></td>
+                            <td><button class="action-btn"><i class="fas fa-eye"></i></button></td>
+                        </tr>
+                        <tr>
+                            <td><strong>#TXN001239</strong></td>
+                            <td>2024-01-14 16:45</td>
+                            <td>Rohit Mehta</td>
+                            <td><i class="fas fa-mobile-alt"></i> UPI</td>
+                            <td><strong>₹6,299.00</strong></td>
+                            <td><span class="status-badge success"><i class="fas fa-check-circle"></i> Success</span></td>
+                            <td><button class="action-btn"><i class="fas fa-eye"></i></button></td>
+                        </tr>
+                        <tr>
+                            <td><strong>#TXN001238</strong></td>
+                            <td>2024-01-14 15:11</td>
+                            <td>Anita Joshi</td>
+                            <td><i class="fas fa-mobile-alt"></i> UPI</td>
+                            <td><strong>₹999.00</strong></td>
+                            <td><span class="status-badge success"><i class="fas fa-check-circle"></i> Success</span></td>
+                            <td><button class="action-btn"><i class="fas fa-eye"></i></button></td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 24px; padding-top: 20px; border-top: 1px solid var(--border-color);">
+                    <span style="font-size: 14px; color: var(--text-secondary);">Showing 1–8 of 2,847 transactions</span>
+                    <div style="display: flex; gap: 8px;">
+                        <button class="btn btn-outline" style="padding: 8px 16px; background: var(--bg-light); color: var(--text-primary); border: 1px solid var(--border-color);" disabled>Previous</button>
+                        <button class="btn btn-primary" style="padding: 8px 16px; background: var(--primary-purple); color: white;">Next</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ==================== MANAGE KEYS PAGE ==================== -->
+        <div id="keys" class="page">
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px;">
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">Generate New API Key</h3>
+                    </div>
+                    <form onsubmit="generateKey(event)">
+                        <div class="form-group">
+                            <label class="form-label">Key Name *</label>
+                            <input type="text" class="form-input" placeholder="e.g., Production Server" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Domain Name *</label>
+                            <input type="url" class="form-input" id="keyDomainInput" placeholder="https://yourdomain.com" required>
+                            <small style="color: var(--text-secondary); font-size: 12px; margin-top: 4px; display: block;">
+                                <i class="fas fa-info-circle"></i> Only UPI payments from this domain will be accepted
+                            </small>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Environment</label>
+                            <select class="form-input">
+                                <option>Production</option>
+                                <option>Development / Testing</option>
+                                <option>Staging</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Permissions</label>
+                            <div style="display: flex; flex-direction: column; gap: 12px; margin-top: 8px;">
+                                <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+                                    <input type="checkbox" checked style="width: 18px; height: 18px; accent-color: var(--primary-purple);">
+                                    <span>Create Payments</span>
+                                </label>
+                                <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+                                    <input type="checkbox" checked style="width: 18px; height: 18px; accent-color: var(--primary-purple);">
+                                    <span>Verify Payments</span>
+                                </label>
+                                <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+                                    <input type="checkbox" checked style="width: 18px; height: 18px; accent-color: var(--primary-purple);">
+                                    <span>Refund Payments</span>
+                                </label>
+                                <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+                                    <input type="checkbox" style="width: 18px; height: 18px; accent-color: var(--primary-purple);">
+                                    <span>View Webhooks</span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <!-- Domain Hold Setting -->
+                        <div style="background: var(--bg-light); border-radius: var(--radius-md); padding: 16px; margin-bottom: 20px; border: 1px solid var(--border-color);">
+                            <div class="toggle-row">
+                                <div class="toggle-row-info">
+                                    <h5><i class="fas fa-pause-circle" style="color: #f59e0b; margin-right: 6px;"></i>Put Domain on Hold</h5>
+                                    <p>Temporarily suspend all payments for this domain</p>
+                                </div>
+                                <label class="toggle">
+                                    <input type="checkbox" id="domainHoldToggle">
+                                    <span class="toggle-slider"></span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn btn-success btn-full">
+                            <i class="fas fa-key"></i>Generate API Key
+                        </button>
+                    </form>
+                </div>
+
+                <div>
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">Generated Key</h3>
+                        </div>
+                        <div class="key-display" id="keyDisplay">
+                            <i class="fas fa-lock" style="font-size: 48px; color: var(--text-secondary); opacity: 0.3; margin-bottom: 12px;"></i>
+                            <p style="color: var(--text-secondary);">Generate a new key to see it here</p>
+                        </div>
+                    </div>
+
+                    <div class="card" style="margin-top: 24px;">
+                        <div class="card-header">
+                            <h3 class="card-title">Active Keys</h3>
+                        </div>
+                        <div class="profile-list">
+                            <div class="profile-card">
+                                <div class="profile-info">
+                                    <div class="profile-avatar" style="background: linear-gradient(135deg, #059669, #047857);">
+                                        <i class="fas fa-server"></i>
+                                    </div>
+                                    <div class="profile-details">
+                                        <h4>Production Server</h4>
+                                        <p>https://myecommerce.com</p>
+                                        <small style="color: var(--text-secondary); font-size: 11px;">Created Jan 10, 2024</small>
+                                    </div>
+                                </div>
+                                <div class="profile-actions">
+                                    <button class="action-btn" title="Put on Hold" onclick="toggleKeyHold(this)"><i class="fas fa-pause"></i></button>
+                                    <button class="action-btn" title="Settings" onclick="openKeySettings('myecommerce.com')"><i class="fas fa-cog"></i></button>
+                                    <button class="action-btn" title="Copy Key"><i class="fas fa-copy"></i></button>
+                                    <button class="action-btn" title="Revoke Key" style="color: #ef4444;"><i class="fas fa-trash"></i></button>
+                                </div>
+                            </div>
+                            <div class="profile-card">
+                                <div class="profile-info">
+                                    <div class="profile-avatar" style="background: linear-gradient(135deg, #2563eb, #1d4ed8);">
+                                        <i class="fas fa-code"></i>
+                                    </div>
+                                    <div class="profile-details">
+                                        <h4>Development Environment</h4>
+                                        <p>https://dev.myapp.com</p>
+                                        <small style="color: var(--text-secondary); font-size: 11px;">Created Jan 05, 2024</small>
+                                    </div>
+                                </div>
+                                <div class="profile-actions">
+                                    <button class="action-btn" title="Put on Hold" onclick="toggleKeyHold(this)"><i class="fas fa-pause"></i></button>
+                                    <button class="action-btn" title="Settings" onclick="openKeySettings('dev.myapp.com')"><i class="fas fa-cog"></i></button>
+                                    <button class="action-btn" title="Copy Key"><i class="fas fa-copy"></i></button>
+                                    <button class="action-btn" title="Revoke Key" style="color: #ef4444;"><i class="fas fa-trash"></i></button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ==================== UPI PROFILES PAGE ==================== -->
+        <div id="upi" class="page">
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px;">
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">Add New UPI Profile</h3>
+                    </div>
+                    <form onsubmit="addUPIProfile(event)">
+                        <div class="form-group">
+                            <label class="form-label">Profile Name *</label>
+                            <input type="text" class="form-input" placeholder="e.g., Business Account" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">UPI ID *</label>
+                            <input type="text" class="form-input" placeholder="yourname@upi" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Payee Name *</label>
+                            <input type="text" class="form-input" placeholder="Name as per bank records" required>
+                        </div>
+
+                        <hr style="border: none; border-top: 1px solid var(--border-color); margin: 24px 0;">
+
+                        <!-- IMAP Settings (replaces SMTP) -->
+                        <h4 style="font-size: 16px; font-weight: 600; margin-bottom: 4px; color: var(--text-primary);">
+                            <i class="fas fa-envelope-open-text" style="color: var(--primary-purple); margin-right: 8px;"></i>
+                            IMAP Configuration
+                        </h4>
+                        <p style="font-size: 13px; color: var(--text-secondary); margin-bottom: 20px;">
+                            Used to read bank credit notification emails for automatic payment verification
+                        </p>
+
+                        <div class="form-group">
+                            <label class="form-label">IMAP Host *</label>
+                            <input type="text" class="form-input" placeholder="imap.gmail.com" required>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label class="form-label">IMAP Port *</label>
+                                <input type="number" class="form-input" placeholder="993" required>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Encryption</label>
+                                <select class="form-input">
+                                    <option>SSL/TLS</option>
+                                    <option>STARTTLS</option>
+                                    <option>None</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Email Address *</label>
+                            <input type="email" class="form-input" placeholder="your-email@gmail.com" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">App Password *</label>
+                            <input type="password" class="form-input" placeholder="••••••••" required>
+                            <small style="color: var(--text-secondary); font-size: 12px; margin-top: 4px; display: block;">
+                                <i class="fas fa-info-circle"></i> Use an app-specific password, not your account password
+                            </small>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Mailbox / Folder</label>
+                            <input type="text" class="form-input" placeholder="INBOX" value="INBOX">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Sender Filter *</label>
+                            <input type="text" class="form-input" placeholder="e.g., notify@hdfcbank.com" required>
+                            <small style="color: var(--text-secondary); font-size: 12px; margin-top: 4px; display: block;">
+                                <i class="fas fa-info-circle"></i> Only emails from this sender will be scanned for payment alerts
+                            </small>
+                        </div>
+
+                        <button type="submit" class="btn btn-success btn-full">
+                            <i class="fas fa-plus"></i>Add UPI Profile
+                        </button>
+                    </form>
+                </div>
+
+                <div>
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">Your UPI Profiles</h3>
+                        </div>
+                        <div class="profile-list" id="upiProfileList">
+                            <div class="profile-card" id="upi-profile-business">
+                                <div class="profile-info">
+                                    <div class="profile-avatar">B</div>
+                                    <div class="profile-details">
+                                        <h4>Business Account</h4>
+                                        <p>business@upi · HDFC Bank</p>
+                                    </div>
+                                </div>
+                                <div class="profile-actions">
+                                    <button class="action-btn" title="Hold Profile" onclick="toggleProfileHold(this, 'upi-profile-business')">
+                                        <i class="fas fa-pause"></i>
+                                    </button>
+                                    <button class="action-btn" title="Settings" onclick="openProfileSettings('Business Account')">
+                                        <i class="fas fa-cog"></i>
+                                    </button>
+                                    <button class="action-btn" title="Edit"><i class="fas fa-edit"></i></button>
+                                    <button class="action-btn" title="Delete" style="color: #ef4444;"><i class="fas fa-trash"></i></button>
+                                </div>
+                            </div>
+                            <div class="profile-card" id="upi-profile-personal">
+                                <div class="profile-info">
+                                    <div class="profile-avatar" style="background: linear-gradient(135deg, #059669, #047857);">P</div>
+                                    <div class="profile-details">
+                                        <h4>Personal Account</h4>
+                                        <p>personal@upi · SBI Bank</p>
+                                    </div>
+                                </div>
+                                <div class="profile-actions">
+                                    <button class="action-btn" title="Hold Profile" onclick="toggleProfileHold(this, 'upi-profile-personal')">
+                                        <i class="fas fa-pause"></i>
+                                    </button>
+                                    <button class="action-btn" title="Settings" onclick="openProfileSettings('Personal Account')">
+                                        <i class="fas fa-cog"></i>
+                                    </button>
+                                    <button class="action-btn" title="Edit"><i class="fas fa-edit"></i></button>
+                                    <button class="action-btn" title="Delete" style="color: #ef4444;"><i class="fas fa-trash"></i></button>
+                                </div>
+                            </div>
+                            <div class="profile-card" id="upi-profile-testing">
+                                <div class="profile-info">
+                                    <div class="profile-avatar" style="background: linear-gradient(135deg, #2563eb, #1d4ed8);">T</div>
+                                    <div class="profile-details">
+                                        <h4>Testing Account</h4>
+                                        <p>test@upi · ICICI Bank</p>
+                                    </div>
+                                </div>
+                                <div class="profile-actions">
+                                    <button class="action-btn" title="Hold Profile" onclick="toggleProfileHold(this, 'upi-profile-testing')">
+                                        <i class="fas fa-pause"></i>
+                                    </button>
+                                    <button class="action-btn" title="Settings" onclick="openProfileSettings('Testing Account')">
+                                        <i class="fas fa-cog"></i>
+                                    </button>
+                                    <button class="action-btn" title="Edit"><i class="fas fa-edit"></i></button>
+                                    <button class="action-btn" title="Delete" style="color: #ef4444;"><i class="fas fa-trash"></i></button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card" style="margin-top: 24px;">
+                        <div class="card-header">
+                            <h3 class="card-title">How It Works</h3>
+                        </div>
+                        <div style="padding: 8px 0;">
+                            <div style="display: flex; gap: 16px; margin-bottom: 20px;">
+                                <div style="width: 36px; height: 36px; border-radius: 50%; background: rgba(108, 99, 255, 0.1); display: flex; align-items: center; justify-content: center; color: var(--primary-purple); font-weight: 700; flex-shrink: 0;">1</div>
+                                <div>
+                                    <h4 style="font-size: 14px; font-weight: 600; margin-bottom: 4px;">Customer Pays via UPI</h4>
+                                    <p style="font-size: 13px; color: var(--text-secondary);">Customer sends money using any UPI app to your linked UPI ID</p>
+                                </div>
+                            </div>
+                            <div style="display: flex; gap: 16px; margin-bottom: 20px;">
+                                <div style="width: 36px; height: 36px; border-radius: 50%; background: rgba(108, 99, 255, 0.1); display: flex; align-items: center; justify-content: center; color: var(--primary-purple); font-weight: 700; flex-shrink: 0;">2</div>
+                                <div>
+                                    <h4 style="font-size: 14px; font-weight: 600; margin-bottom: 4px;">Bank Sends Notification</h4>
+                                    <p style="font-size: 13px; color: var(--text-secondary);">Bank emails a credit alert to your configured inbox (read via IMAP)</p>
+                                </div>
+                            </div>
+                            <div style="display: flex; gap: 16px;">
+                                <div style="width: 36px; height: 36px; border-radius: 50%; background: rgba(108, 99, 255, 0.1); display: flex; align-items: center; justify-content: center; color: var(--primary-purple); font-weight: 700; flex-shrink: 0;">3</div>
+                                <div>
+                                    <h4 style="font-size: 14px; font-weight: 600; margin-bottom: 4px;">Auto Verification</h4>
+                                    <p style="font-size: 13px; color: var(--text-secondary);">System reads the email, matches the UTR, and confirms payment automatically</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+</div>
+
+<!-- ==================== SUCCESS MODAL ==================== -->
+<div class="modal-overlay" id="successModal">
+    <div class="modal">
+        <div class="modal-header">
+            <h3 class="modal-title">Success!</h3>
+            <button class="modal-close" onclick="closeModal('successModal')">&times;</button>
+        </div>
+        <div style="text-align: center; padding: 20px 0;">
+            <div style="width: 80px; height: 80px; border-radius: 50%; background: rgba(74, 222, 128, 0.15); display: flex; align-items: center; justify-content: center; margin: 0 auto 20px;">
+                <i class="fas fa-check" style="font-size: 40px; color: #059669;"></i>
+            </div>
+            <h3 id="modalTitle" style="font-size: 20px; font-weight: 700; margin-bottom: 8px;">Operation Successful</h3>
+            <p id="modalMessage" style="color: var(--text-secondary); margin-bottom: 24px;">Your action has been completed successfully.</p>
+            <button class="btn btn-primary" onclick="closeModal('successModal')" style="justify-content: center; padding: 12px 32px; background: var(--primary-purple); color: white;">
+                Continue
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- ==================== PROFILE / KEY SETTINGS MODAL ==================== -->
+<div class="modal-overlay" id="settingsModal">
+    <div class="modal">
+        <div class="modal-header">
+            <h3 class="modal-title" id="settingsModalTitle">Profile Settings</h3>
+            <button class="modal-close" onclick="closeModal('settingsModal')">&times;</button>
+        </div>
+
+        <div class="settings-section">
+            <div class="settings-section-title">Hold & Suspension</div>
+            <div class="toggle-row">
+                <div class="toggle-row-info">
+                    <h5>Put on Hold</h5>
+                    <p>Pause all incoming payments for this profile/domain temporarily</p>
+                </div>
+                <label class="toggle">
+                    <input type="checkbox" id="settingsHoldToggle">
+                    <span class="toggle-slider"></span>
+                </label>
+            </div>
+            <div class="toggle-row">
+                <div class="toggle-row-info">
+                    <h5>Auto-resume after 24 hours</h5>
+                    <p>Automatically lift the hold after one day</p>
+                </div>
+                <label class="toggle">
+                    <input type="checkbox">
+                    <span class="toggle-slider"></span>
+                </label>
+            </div>
+        </div>
+
+        <div class="settings-section">
+            <div class="settings-section-title">Payment Limits</div>
+            <div class="form-group" style="margin-bottom: 16px;">
+                <label class="form-label" style="font-weight: 500;">Min Transaction Amount (₹)</label>
+                <input type="number" class="form-input" placeholder="1" value="1">
+            </div>
+            <div class="form-group" style="margin-bottom: 0;">
+                <label class="form-label" style="font-weight: 500;">Max Transaction Amount (₹)</label>
+                <input type="number" class="form-input" placeholder="100000" value="100000">
+            </div>
+        </div>
+
+        <div class="settings-section">
+            <div class="settings-section-title">Notifications</div>
+            <div class="toggle-row">
+                <div class="toggle-row-info">
+                    <h5>Payment alerts</h5>
+                    <p>Get notified for every successful payment</p>
+                </div>
+                <label class="toggle">
+                    <input type="checkbox" checked>
+                    <span class="toggle-slider"></span>
+                </label>
+            </div>
+            <div class="toggle-row">
+                <div class="toggle-row-info">
+                    <h5>Failed payment alerts</h5>
+                    <p>Get notified when a payment fails or times out</p>
+                </div>
+                <label class="toggle">
+                    <input type="checkbox" checked>
+                    <span class="toggle-slider"></span>
+                </label>
+            </div>
+        </div>
+
+        <div class="settings-section">
+            <div class="settings-section-title">IMAP Polling</div>
+            <div class="form-group" style="margin-bottom: 0;">
+                <label class="form-label" style="font-weight: 500;">Poll Interval</label>
+                <select class="form-input">
+                    <option>Every 30 seconds</option>
+                    <option>Every 1 minute</option>
+                    <option>Every 5 minutes</option>
+                    <option>Every 15 minutes</option>
+                </select>
+            </div>
+        </div>
+
+        <div style="display: flex; gap: 12px; margin-top: 8px;">
+            <button class="btn btn-success" style="flex: 1; justify-content: center; padding: 12px;" onclick="closeModal('settingsModal')">
+                <i class="fas fa-save"></i>Save Settings
+            </button>
+            <button class="btn btn-danger" style="padding: 12px 20px;" onclick="closeModal('settingsModal')">
+                <i class="fas fa-trash"></i>
+            </button>
+        </div>
+    </div>
+</div>
+
+<script>
+    // ─── Page Navigation ───────────────────────────────────────────────
+    function showPage(pageId, linkEl) {
+        document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+        document.getElementById(pageId).classList.add('active');
+
+        document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+        if (linkEl) linkEl.closest('.nav-link').classList.add('active');
+
+        const titles = {
+            dashboard: 'Dashboard',
+            transactions: 'Transactions',
+            keys: 'Manage Keys',
+            upi: 'UPI Profiles'
+        };
+        const subs = {
+            dashboard: "Welcome back! Here's your payment overview",
+            transactions: 'View and manage all your UPI transactions',
+            keys: 'Generate and manage API keys for your applications',
+            upi: 'Configure UPI profiles for automatic payment verification'
+        };
+        document.getElementById('page-title').textContent = titles[pageId];
+        document.getElementById('page-subtitle').textContent = subs[pageId];
+
+        closeSearch();
+    }
+
+    // ─── Global Search ──────────────────────────────────────────────────
+    const searchData = [
+        { name: 'Rahul Sharma',  utr: '#TXN001245', amount: '₹5,499', time: 'Today 14:32' },
+        { name: 'Priya Patel',   utr: '#TXN001244', amount: '₹12,999', time: 'Today 13:21' },
+        { name: 'Amit Kumar',    utr: '#TXN001243', amount: '₹2,199', time: 'Today 12:45' },
+        { name: 'Sneha Reddy',   utr: '#TXN001242', amount: '₹8,750', time: 'Today 11:08' },
+        { name: 'Vikram Singh',  utr: '#TXN001241', amount: '₹3,499', time: 'Today 10:33' },
+        { name: 'Neha Gupta',    utr: '#TXN001240', amount: '₹15,999', time: 'Yesterday 18:22' },
+        { name: 'Rohit Mehta',   utr: '#TXN001239', amount: '₹6,299', time: 'Yesterday 16:45' },
+        { name: 'Anita Joshi',   utr: '#TXN001238', amount: '₹999', time: 'Yesterday 15:11' },
+    ];
+
+    let searchOpen = false;
+
+    function toggleSearch() {
+        searchOpen = !searchOpen;
+        const bar = document.getElementById('globalSearchBar');
+        const btn = document.getElementById('searchToggleBtn');
+        const dropdown = document.getElementById('searchResultsDropdown');
+
+        if (searchOpen) {
+            bar.classList.add('open');
+            btn.classList.add('active-search');
+            setTimeout(() => document.getElementById('globalSearchInput').focus(), 100);
+        } else {
+            bar.classList.remove('open');
+            btn.classList.remove('active-search');
+            dropdown.classList.remove('show');
+            document.getElementById('globalSearchInput').value = '';
+        }
+    }
+
+    function closeSearch() {
+        searchOpen = false;
+        document.getElementById('globalSearchBar').classList.remove('open');
+        document.getElementById('searchToggleBtn').classList.remove('active-search');
+        document.getElementById('searchResultsDropdown').classList.remove('show');
+        document.getElementById('globalSearchInput').value = '';
+    }
+
+    function handleGlobalSearch(query) {
+        const dropdown = document.getElementById('searchResultsDropdown');
+        if (!query.trim()) {
+            dropdown.classList.remove('show');
+            return;
+        }
+
+        const q = query.toLowerCase();
+        const results = searchData.filter(r =>
+            r.name.toLowerCase().includes(q) || r.utr.toLowerCase().includes(q)
+        );
+
+        if (results.length === 0) {
+            dropdown.innerHTML = `<div class="search-empty"><i class="fas fa-search" style="display:block;font-size:24px;margin-bottom:8px;opacity:0.3;"></i>No results for "${query}"</div>`;
+        } else {
+            dropdown.innerHTML = `<div class="search-results-header">Transactions</div>` +
+                results.map(r => `
+                    <div class="search-result-item">
+                        <div class="search-result-icon"><i class="fas fa-mobile-alt"></i></div>
+                        <div class="search-result-info">
+                            <h5>${r.name}</h5>
+                            <p>${r.utr} · ${r.time}</p>
+                        </div>
+                        <div class="search-result-amount">${r.amount}</div>
+                    </div>
+                `).join('');
+        }
+        dropdown.classList.add('show');
+    }
+
+    // Close search dropdown on outside click
+    document.addEventListener('click', (e) => {
+        const container = document.getElementById('globalSearchContainer');
+        const btn = document.getElementById('searchToggleBtn');
+        if (!container.contains(e.target) && !btn.contains(e.target) && searchOpen) {
+            // keep bar open if they click elsewhere; only close dropdown
+            document.getElementById('searchResultsDropdown').classList.remove('show');
+        }
+    });
+
+    // ─── Notifications ──────────────────────────────────────────────────
+    const recentPayments = [
+        { name: 'Rahul Sharma',  amount: '₹5,499',  utr: '#TXN001245', time: '2 min ago',    unread: true  },
+        { name: 'Priya Patel',   amount: '₹12,999', utr: '#TXN001244', time: '18 min ago',   unread: true  },
+        { name: 'Sneha Reddy',   amount: '₹8,750',  utr: '#TXN001242', time: '1 hour ago',   unread: true  },
+        { name: 'Neha Gupta',    amount: '₹15,999', utr: '#TXN001240', time: 'Yesterday',    unread: false },
+        { name: 'Rohit Mehta',   amount: '₹6,299',  utr: '#TXN001239', time: 'Yesterday',    unread: false },
+    ];
+
+    function renderNotifications() {
+        const list = document.getElementById('notifList');
+        const badge = document.getElementById('notifBadge');
+        const unreadCount = recentPayments.filter(p => p.unread).length;
+
+        badge.style.display = unreadCount > 0 ? 'block' : 'none';
+
+        list.innerHTML = recentPayments.map(p => `
+            <div class="notif-item ${p.unread ? 'unread' : ''}">
+                <div class="notif-icon"><i class="fas fa-check"></i></div>
+                <div class="notif-content">
+                    <h5>Payment from ${p.name}</h5>
+                    <p>${p.utr} · UPI</p>
+                    <span class="notif-time">${p.time}</span>
+                </div>
+                <div class="notif-amount">${p.amount}</div>
+            </div>
+        `).join('');
+    }
+
+    let notifOpen = false;
+
+    function toggleNotifications() {
+        notifOpen = !notifOpen;
+        document.getElementById('notificationPanel').classList.toggle('show', notifOpen);
+    }
+
+    function markAllRead() {
+        recentPayments.forEach(p => p.unread = false);
+        renderNotifications();
+    }
+
+    document.addEventListener('click', (e) => {
+        const panel = document.getElementById('notificationPanel');
+        const btn = document.getElementById('notifBtn');
+        if (!panel.contains(e.target) && !btn.contains(e.target) && notifOpen) {
+            notifOpen = false;
+            panel.classList.remove('show');
+        }
+    });
+
+    // ─── Generate API Key ───────────────────────────────────────────────
+    function generateKey(e) {
+        e.preventDefault();
+        const key = 'cp_live_' + Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
+        const onHold = document.getElementById('domainHoldToggle').checked;
+
+        document.getElementById('keyDisplay').innerHTML = `
+            <div style="margin-bottom: 12px;"><i class="fas fa-key" style="font-size: 32px; color: var(--primary-purple);"></i></div>
+            <p style="font-size: 14px; color: var(--text-secondary); margin-bottom: 8px;">Your API Key — save it now, it won't be shown again</p>
+            <div class="key-value">${key}</div>
+            ${onHold ? '<span style="display:inline-flex;align-items:center;gap:6px;padding:4px 12px;background:rgba(245,158,11,0.15);color:#d97706;border-radius:12px;font-size:12px;font-weight:600;margin-bottom:8px;"><i class="fas fa-pause-circle"></i>Created on hold</span>' : ''}
+            <div class="key-meta">
+                <span><i class="fas fa-mobile-alt"></i> UPI Only</span>
+                <span><i class="fas fa-clock"></i> Just now</span>
+            </div>
+            <button class="btn btn-primary" style="margin-top: 16px; background: var(--primary-purple); color: white;" onclick="navigator.clipboard.writeText('${key}')">
+                <i class="fas fa-copy"></i> Copy Key
+            </button>
+        `;
+
+        showModal('API Key Generated!', "Your new API key has been created. Save it securely — it won't be visible again.");
+    }
+
+    // ─── Add UPI Profile ────────────────────────────────────────────────
+    function addUPIProfile(e) {
+        e.preventDefault();
+        showModal('UPI Profile Added!', 'Your UPI profile is live. Cosmic Pay will now poll your IMAP inbox to verify incoming payments automatically.');
+        e.target.reset();
+    }
+
+    // ─── Hold Toggles ───────────────────────────────────────────────────
+    function toggleProfileHold(btn, cardId) {
+        const card = document.getElementById(cardId);
+        const isOnHold = card.classList.toggle('on-hold');
+        btn.classList.toggle('hold-active', isOnHold);
+        btn.title = isOnHold ? 'Resume Profile' : 'Hold Profile';
+        btn.querySelector('i').className = isOnHold ? 'fas fa-play' : 'fas fa-pause';
+
+        const details = card.querySelector('.profile-details');
+        const existing = details.querySelector('.hold-badge');
+        if (isOnHold) {
+            if (!existing) {
+                const badge = document.createElement('span');
+                badge.className = 'hold-badge';
+                badge.innerHTML = '<i class="fas fa-pause-circle"></i> On Hold';
+                details.appendChild(badge);
+            }
+        } else {
+            if (existing) existing.remove();
+        }
+    }
+
+    function toggleKeyHold(btn) {
+        const card = btn.closest('.profile-card');
+        const isOnHold = card.classList.toggle('on-hold');
+        btn.classList.toggle('hold-active', isOnHold);
+        btn.title = isOnHold ? 'Resume' : 'Put on Hold';
+        btn.querySelector('i').className = isOnHold ? 'fas fa-play' : 'fas fa-pause';
+    }
+
+    // ─── Settings Modal ─────────────────────────────────────────────────
+    function openProfileSettings(name) {
+        document.getElementById('settingsModalTitle').textContent = `Settings — ${name}`;
+        document.getElementById('settingsModal').classList.add('show');
+    }
+
+    function openKeySettings(domain) {
+        document.getElementById('settingsModalTitle').textContent = `Settings — ${domain}`;
+        document.getElementById('settingsModal').classList.add('show');
+    }
+
+    // ─── Modals ─────────────────────────────────────────────────────────
+    function showModal(title, message) {
+        document.getElementById('modalTitle').textContent = title;
+        document.getElementById('modalMessage').textContent = message;
+        document.getElementById('successModal').classList.add('show');
+    }
+
+    function closeModal(id) {
+        document.getElementById(id).classList.remove('show');
+    }
+
+    document.getElementById('successModal').addEventListener('click', function(e) {
+        if (e.target === this) closeModal('successModal');
+    });
+
+    document.getElementById('settingsModal').addEventListener('click', function(e) {
+        if (e.target === this) closeModal('settingsModal');
+    });
+
+    // ─── Init ───────────────────────────────────────────────────────────
+    renderNotifications();
+</script>
+</body>
+</html>
