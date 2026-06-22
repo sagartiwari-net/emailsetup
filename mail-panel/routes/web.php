@@ -6,6 +6,7 @@ use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\DomainController;
 use App\Http\Controllers\Admin\FailedJobController;
 use App\Http\Controllers\Admin\MailLogController;
+use App\Http\Controllers\Admin\ProfileController;
 use App\Http\Controllers\Admin\SubscriberListController;
 use App\Http\Controllers\Admin\TemplateController;
 use App\Http\Controllers\Admin\TenantController;
@@ -74,6 +75,9 @@ Route::middleware(['auth', 'tenant.active'])->prefix('admin')->name('admin.')->g
 
     Route::get('/test-mail', [TestMailController::class, 'create'])->name('test-mail.create');
     Route::post('/test-mail', [TestMailController::class, 'send'])->name('test-mail.send');
+
+    Route::get('/account/password', [ProfileController::class, 'editPassword'])->name('account.password.edit');
+    Route::put('/account/password', [ProfileController::class, 'updatePassword'])->name('account.password.update');
 
     Route::middleware('super_admin')->group(function () {
         Route::get('/tenants', [TenantController::class, 'index'])->name('tenants.index');
