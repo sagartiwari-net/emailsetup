@@ -71,6 +71,11 @@
                     <i class="fas fa-flask"></i><span>Test Mail</span>
                 </a>
             </li>
+            <li class="nav-item">
+                <a href="{{ route('admin.account.password.edit') }}" class="nav-link {{ request()->routeIs('admin.account.password.*') ? 'active' : '' }}">
+                    <i class="fas fa-lock"></i><span>Change Password</span>
+                </a>
+            </li>
             @if (auth()->user()->isSuperAdmin())
                 <li class="nav-divider"></li>
                 <li class="nav-item">
@@ -87,13 +92,6 @@
         </ul>
 
         <div class="nav-divider"></div>
-        <ul class="nav-menu">
-            <li class="nav-item">
-                <a href="{{ route('admin.account.password.edit') }}" class="nav-link {{ request()->routeIs('admin.account.password.*') ? 'active' : '' }}">
-                    <i class="fas fa-lock"></i><span>Change Password</span>
-                </a>
-            </li>
-        </ul>
         <form method="POST" action="{{ route('logout') }}">
             @csrf
             <button type="submit" class="nav-link logout" style="width:100%;border:none;background:none;cursor:pointer;">
