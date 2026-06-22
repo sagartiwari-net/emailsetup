@@ -10,6 +10,9 @@ mail-panel/.env.*
 !mail-panel/.env.example
 demo-website/config.php
 
+# SemrushToolz — separate project, not part of this repo
+SemrushToolz/
+
 # Laravel (also in mail-panel/.gitignore)
 mail-panel/vendor/
 mail-panel/node_modules/
