@@ -133,7 +133,7 @@ class MailSendService
         Config::set('mail.from.address', $domain->defaultFromEmail());
         Config::set('mail.from.name', $domain->defaultFromName());
 
-        if (env('MAIL_MAILER', 'log') === 'log') {
+        if (config('mail.default', 'log') === 'log') {
             Config::set('mail.default', 'log');
 
             return;
